@@ -130,7 +130,7 @@ func (u *UserController) Logout() {
 // @Description get current uid
 // @Param	uid		path 	int	true		"The key for staticblock"
 // @Success 200 {json} {"uid": xxx}
-// @Failure 403 :uid is empty
+// @Failure 403 :uid is not int
 // @router /get/:uid [get]
 func (u *UserController) GetUID() {
 	type UID struct {
@@ -138,7 +138,13 @@ func (u *UserController) GetUID() {
 	}
 
 	uid := &UID{}
-	uid.Data, _ = u.GetInt(":uid")
+	var err error
+	uid.Data, err = u.GetInt(":uid")
+	if err != nil {
+		u.Ctx.Output.Status = 403
+		u.ServeJSON()
+	}
+
 	u.Data["json"] = uid
 	u.ServeJSON()
 }

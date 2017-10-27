@@ -24,13 +24,13 @@ func TestUser(t *testing.T) {
 	beego.BeeApp.Handlers.ServeHTTP(w, r)
 
 	Convey(fmt.Sprintf("Subject: Test User Invalid\n"), t, func() {
-		Convey("Status Code Should Be 404", func() {
-			So(w.Code, ShouldEqual, 404)
+		Convey("Status Code Should Be 403", func() {
+			So(w.Code, ShouldEqual, 403)
 		})
 	})
 
 	var wg sync.WaitGroup
-	for i := 1; i < 100; i++ {
+	for i := 1; i < 2; i++ {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()

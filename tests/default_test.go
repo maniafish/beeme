@@ -2,6 +2,7 @@ package test
 
 import (
 	_ "beeme/routers"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
@@ -24,7 +25,7 @@ func TestGet(t *testing.T) {
 	w := httptest.NewRecorder()
 	beego.BeeApp.Handlers.ServeHTTP(w, r)
 
-	beego.Trace("testing", "TestGet", "Code[%d]\n%s", w.Code, w.Body.String())
+	fmt.Printf("Code[%d]\n%s", w.Code, w.Body.String())
 
 	Convey("Subject: Test Station Endpoint\n", t, func() {
 		Convey("Status Code Should Be 200", func() {

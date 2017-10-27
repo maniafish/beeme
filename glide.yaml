@@ -1,0 +1,11 @@
+package: beeme
+import:
+- package: github.com/astaxie/beego
+  version: ~1.9.0
+  subpackages:
+  - context/param
+testImport:
+- package: github.com/smartystreets/goconvey
+  version: ~1.6.3
+  subpackages:
+  - convey

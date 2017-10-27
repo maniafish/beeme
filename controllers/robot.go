@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"beeme/conf"
 	"beeme/models"
 	"encoding/json"
 	"fmt"
@@ -15,6 +16,7 @@ type BotController struct {
 	beego.Controller
 }
 
+// BotResp response
 type BotResp struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
@@ -29,12 +31,12 @@ type BotResp struct {
 func (b *BotController) Get() {
 	question := b.GetString(":ask")
 	req, _ := json.Marshal(&models.RobotReq{
-		Key:    "841764bf2ac449769c2434ccd4d885b4",
+		Key:    conf.Config.TulingKeys[0],
 		Info:   question,
 		UserID: "123",
 	})
 
-	resp, err := httplib.Post("http://www.tuling123.com/openapi/api").Body(req).Bytes()
+	resp, err := httplib.Post(conf.Config.TulingURL).Body(req).Bytes()
 	if err != nil {
 		b.Response(501, "external error")
 	}

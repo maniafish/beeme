@@ -3,6 +3,7 @@ package controllers
 import (
 	"beeme/conf"
 	"beeme/models"
+	"beeme/util/counter"
 	"encoding/json"
 	"fmt"
 
@@ -22,6 +23,13 @@ type BotResp struct {
 	Msg  string `json:"msg"`
 }
 
+var robotid = counter.New()
+
+func getKey() string {
+	keyID := robotid.Incr() % uint64(len(conf.Config.TulingKeys))
+	return conf.Config.TulingKeys[keyID]
+}
+
 // Get get
 // @Title Get
 // @Description get question
@@ -31,7 +39,7 @@ type BotResp struct {
 func (b *BotController) Get() {
 	question := b.GetString(":ask")
 	req, _ := json.Marshal(&models.RobotReq{
-		Key:    conf.Config.TulingKeys[0],
+		Key:    getKey(),
 		Info:   question,
 		UserID: "123",
 	})

@@ -1,0 +1,14 @@
+# 图灵机器人相关配置
+TulingURL = "http://www.tuling123.com/openapi/api"
+TulingKeys = [
+    "841764bf2ac449769c2434ccd4d885b4",
+    "bd86d3eb15204a2ebca954da8e7ad7aa",
+    "51f35a044add4f4db2694e501eafda4c",
+    "57dfa7a19df24bdca183ec1aa2b14049",
+    "0dc0007941aa46d0838219105dcd4abf",
+    "9ffff5a7961343b8831fb672e83b170c",
+    "f96a075407174fd890c831ca3c329c20",
+    "c0397120c1b840f3970572247d581ee1",
+    "4ac1622cdf0840bf96179bd258cef383",
+    "0ecc150d3a334d4387d7cfd389e186ae",
+]

@@ -1,0 +1,6 @@
+beeme
+routers/commentsRouter*
+*.tmp
+swagger/
+*.swp
+*.DS_Store

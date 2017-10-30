@@ -17,6 +17,7 @@ services:
 
 install:
     - go get -v $(go list ./...|grep -v vendor/)
+    - go get -u github.com/golang/lint/golint
 
 script:
     - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done

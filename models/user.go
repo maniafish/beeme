@@ -4,14 +4,12 @@ import (
 	"beeme/conf"
 	"errors"
 	"fmt"
-	"gas2/pkg/counter"
 
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
-	rowid        = counter.New()
 	userOrmer    orm.Ormer
 	UserNotExist = errors.New("User not Exist")
 )

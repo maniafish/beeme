@@ -7,13 +7,17 @@ sudo:
     false
 
 go:
-  - 1.8.1
+    - 1.8.1
 
 go_import_path:
     beeme
 
 services:
-  - mysql
+    - mysql
+
+install:
+    - go get -v $(go list ./...|grep -v vendor/)
+
 script:
-  - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done
-  - go vet $(go list ./...|grep -v vendor/)
+    - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done
+    - go vet $(go list ./...|grep -v vendor/)

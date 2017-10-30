@@ -16,7 +16,7 @@ type Controller struct {
 // @Title CreateUser
 // @Description create users
 // @Param	body		body 	models.User	true		"body for user content"
-// @Success 200 {int} models.User.ID
+// @Success 200 {json} {"uid": models.User.ID}
 // @Failure 400 invalid body
 // @Failure 500 internal error
 // @router / [post]
@@ -77,15 +77,21 @@ func (u *Controller) Put() {
 		u.Response(400, err.Error())
 	}
 
-	var user *models.User
-	json.Unmarshal(u.Ctx.Input.RequestBody, &user)
-	user.ID = uid
-	err = user.Update()
+	user := &models.User{ID: uid}
+	err = user.Get()
 	switch err {
 	case models.UserNotExist:
 		u.Response(404, err.Error())
 	case nil:
-		u.Response(200, user)
+		json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+		user.ID = uid
+		err = user.Update()
+		switch err {
+		case nil:
+			u.Response(200, user)
+		default:
+			u.Response(500, err.Error())
+		}
 	default:
 		u.Response(500, err.Error())
 	}
@@ -95,7 +101,7 @@ func (u *Controller) Put() {
 // @Title Delete
 // @Description delete the user
 // @Param	uid		path 	int	true		"The uid you want to delete"
-// @Success 200 {int} models.User.ID
+// @Success 200 {json} {"uid": models.User.ID}
 // @Failure 400 invalid uid
 // @Failure 404 user not exist
 // @Failure 500 internal error

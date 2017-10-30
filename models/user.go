@@ -60,15 +60,8 @@ func (u *User) Get() error {
 
 // Update update user
 func (u *User) Update() error {
-	affect, err := userOrmer.Update(u)
-	switch {
-	case err != nil:
-		return err
-	case affect == 0:
-		return UserNotExist
-	default:
-		return nil
-	}
+	_, err := userOrmer.Update(u)
+	return err
 }
 
 func (u *User) Delete() error {

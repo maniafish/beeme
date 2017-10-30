@@ -8,6 +8,10 @@ sudo:
 
 go:
   - 1.8.1
+
+go_import_path:
+    $GOPATH/src/github.com/mania_fish
+
 services:
   - mysql
 script:

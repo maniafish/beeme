@@ -1,6 +1,7 @@
 package main
 
 import (
+	"beeme/models"
 	_ "beeme/routers"
 
 	"github.com/astaxie/beego"
@@ -12,5 +13,6 @@ func main() {
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 
+	models.Init()
 	beego.Run()
 }

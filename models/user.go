@@ -1,86 +1,86 @@
 package models
 
 import (
+	"beeme/conf"
 	"errors"
-	"strconv"
-	"time"
+	"fmt"
+	"gas2/pkg/counter"
+
+	"github.com/astaxie/beego/orm"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
-	UserList map[string]*User
+	rowid        = counter.New()
+	userOrmer    orm.Ormer
+	UserNotExist = errors.New("User not Exist")
 )
 
-func init() {
-	UserList = make(map[string]*User)
-	u := User{"123", "maniafish", "123456", Profile{"male", 20, "China", "mania_fish@163.com"}}
-	UserList["123"] = &u
-}
-
+// User user model
 type User struct {
-	Id       string  `json:"id"`
-	Username string  `json:"username"`
-	Password string  `json:"password"`
-	Profile  Profile `json:"profile"`
+	ID       int    `json:"id" orm:"pk;column(id);auto"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Gender   string `json:"gender"`
+	Age      int    `json:"age"`
+	Address  string `json:"address"`
+	Email    string `json:"email"`
 }
 
-type Profile struct {
-	Gender  string `json:"gender"`
-	Age     int    `json:"age"`
-	Address string `json:"address"`
-	Email   string `json:"email"`
-}
-
-func AddUser(u User) string {
-	u.Id = "user_" + strconv.FormatInt(time.Now().UnixNano(), 10)
-	UserList[u.Id] = &u
-	return u.Id
-}
-
-func GetUser(uid string) (u *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		return u, nil
+// Init Register database
+func Init() error {
+	err := orm.RegisterDataBase("default", "mysql", conf.Config.UserDB, conf.Config.DBMaxIdleConns, conf.Config.DBMaxOpenConns)
+	if err != nil {
+		return fmt.Errorf("RegisterDataBase error: %v", err)
 	}
-	return nil, errors.New("User not exists")
+
+	orm.RegisterModel(new(User))
+	orm.RunSyncdb("default", false, true)
+	userOrmer = orm.NewOrm()
+	return nil
 }
 
-func GetAllUsers() map[string]*User {
-	return UserList
-}
-
-func UpdateUser(uid string, uu *User) (a *User, err error) {
-	if u, ok := UserList[uid]; ok {
-		if uu.Username != "" {
-			u.Username = uu.Username
-		}
-		if uu.Password != "" {
-			u.Password = uu.Password
-		}
-		if uu.Profile.Age != 0 {
-			u.Profile.Age = uu.Profile.Age
-		}
-		if uu.Profile.Address != "" {
-			u.Profile.Address = uu.Profile.Address
-		}
-		if uu.Profile.Gender != "" {
-			u.Profile.Gender = uu.Profile.Gender
-		}
-		if uu.Profile.Email != "" {
-			u.Profile.Email = uu.Profile.Email
-		}
-		return u, nil
+// Add add new user
+func (u *User) Add() (int, error) {
+	_, err := userOrmer.Insert(u)
+	if err != nil {
+		return -1, err
 	}
-	return nil, errors.New("User Not Exist")
+	return u.ID, nil
 }
 
-func Login(username, password string) bool {
-	for _, u := range UserList {
-		if u.Username == username && u.Password == password {
-			return true
-		}
+// Get get user by id
+func (u *User) Get() error {
+	err := userOrmer.Read(u, "id")
+	switch err {
+	case orm.ErrNoRows:
+		return UserNotExist
+	default:
+		return err
 	}
-	return false
 }
 
-func DeleteUser(uid string) {
-	delete(UserList, uid)
+// Update update user
+func (u *User) Update() error {
+	affect, err := userOrmer.Update(u)
+	switch {
+	case err != nil:
+		return err
+	case affect == 0:
+		return UserNotExist
+	default:
+		return nil
+	}
+}
+
+func (u *User) Delete() error {
+	affect, err := userOrmer.Delete(u)
+	switch {
+	case err != nil:
+		return err
+	case affect == 0:
+		return UserNotExist
+	default:
+		return nil
+	}
 }

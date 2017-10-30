@@ -12,3 +12,8 @@ TulingKeys = [
     "4ac1622cdf0840bf96179bd258cef383",
     "0ecc150d3a334d4387d7cfd389e186ae",
 ]
+
+# 数据库配置
+DBMaxOpenConns = 128
+DBMaxIdleConns = 32
+UserDB = "root:@tcp(127.0.0.1:3306)/USER?charset=latin1&autocommit=1&parseTime=true&loc=Local&timeout=3s"

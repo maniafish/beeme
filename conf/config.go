@@ -13,6 +13,10 @@ import (
 type MainConfig struct {
 	TulingURL  string
 	TulingKeys []string
+
+	DBMaxOpenConns int
+	DBMaxIdleConns int
+	UserDB         string
 }
 
 var Config *MainConfig

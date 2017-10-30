@@ -8,22 +8,22 @@ package routers
 // @LicenseUrl http://www.apache.org/licenses/LICENSE-2.0.html
 
 import (
-	"beeme/controllers"
 	"beeme/controllers/robot"
+	"beeme/controllers/user"
 
 	"github.com/astaxie/beego"
 )
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/user",
-			beego.NSInclude(
-				&controllers.UserController{},
-			),
-		),
 		beego.NSNamespace("/robot",
 			beego.NSInclude(
 				&robot.Controller{},
+			),
+		),
+		beego.NSNamespace("/user",
+			beego.NSInclude(
+				&user.Controller{},
 			),
 		),
 	)

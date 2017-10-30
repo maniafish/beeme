@@ -53,7 +53,7 @@ func (u *Controller) Get() {
 	user := &models.User{ID: uid}
 	err = user.Get()
 	switch err {
-	case models.UserNotExist:
+	case models.ErrUNE:
 		u.Response(404, err.Error())
 	case nil:
 		u.Response(200, user)
@@ -80,7 +80,7 @@ func (u *Controller) Put() {
 	user := &models.User{ID: uid}
 	err = user.Get()
 	switch err {
-	case models.UserNotExist:
+	case models.ErrUNE:
 		u.Response(404, err.Error())
 	case nil:
 		json.Unmarshal(u.Ctx.Input.RequestBody, &user)
@@ -111,7 +111,7 @@ func (u *Controller) Delete() {
 	user := &models.User{ID: uid}
 	err = user.Delete()
 	switch err {
-	case models.UserNotExist:
+	case models.ErrUNE:
 		u.Response(404, err.Error())
 	case nil:
 		u.Response(200, map[string]int{"uid": uid})

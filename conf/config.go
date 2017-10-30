@@ -19,6 +19,7 @@ type MainConfig struct {
 	UserDB         string
 }
 
+// Config global config
 var Config *MainConfig
 
 func init() {

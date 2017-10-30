@@ -3,15 +3,17 @@ package models
 import (
 	"beeme/conf"
 	"errors"
-	"fmt"
 
 	"github.com/astaxie/beego/orm"
+
+	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
-	userOrmer    orm.Ormer
-	UserNotExist = errors.New("User not Exist")
+	userOrmer orm.Ormer
+	// ErrUNE  user not exist error
+	ErrUNE = errors.New("User not Exist")
 )
 
 // User user model
@@ -26,16 +28,18 @@ type User struct {
 }
 
 // Init Register database
-func Init() error {
+func Init() {
 	err := orm.RegisterDataBase("default", "mysql", conf.Config.UserDB, conf.Config.DBMaxIdleConns, conf.Config.DBMaxOpenConns)
 	if err != nil {
-		return fmt.Errorf("RegisterDataBase error: %v", err)
+		panic(err)
 	}
 
 	orm.RegisterModel(new(User))
-	orm.RunSyncdb("default", false, true)
+	err = orm.RunSyncdb("default", false, true)
+	if err != nil {
+		panic(err)
+	}
 	userOrmer = orm.NewOrm()
-	return nil
 }
 
 // Add add new user
@@ -52,7 +56,7 @@ func (u *User) Get() error {
 	err := userOrmer.Read(u, "id")
 	switch err {
 	case orm.ErrNoRows:
-		return UserNotExist
+		return ErrUNE
 	default:
 		return err
 	}
@@ -64,13 +68,14 @@ func (u *User) Update() error {
 	return err
 }
 
+// Delete delete user
 func (u *User) Delete() error {
 	affect, err := userOrmer.Delete(u)
 	switch {
 	case err != nil:
 		return err
 	case affect == 0:
-		return UserNotExist
+		return ErrUNE
 	default:
 		return nil
 	}

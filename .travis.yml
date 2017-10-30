@@ -1,0 +1,15 @@
+language: go
+
+notifications:
+    true
+
+sudo:
+    false
+
+go:
+  - 1.8.1
+services:
+  - mysql
+script:
+  - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done
+  - go vet $(go list ./...|grep -v vendor/)

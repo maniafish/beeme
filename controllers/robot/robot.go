@@ -1,4 +1,4 @@
-package controllers
+package robot
 
 import (
 	"beeme/conf"
@@ -12,13 +12,13 @@ import (
 	"github.com/astaxie/beego/logs"
 )
 
-// BotController Operations about BotChat
-type BotController struct {
+// Controller Operations about BotChat
+type Controller struct {
 	beego.Controller
 }
 
-// BotResp response
-type BotResp struct {
+// Resp response
+type Resp struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 }
@@ -34,9 +34,9 @@ func getKey() string {
 // @Title Get
 // @Description get question
 // @Param	ask		path 	string	true		"The question you ask"
-// @Success 200 {object} controllers.BotResp
+// @Success 200 {object} robot.Resp
 // @router /ask/:ask [get]
-func (b *BotController) Get() {
+func (b *Controller) Get() {
 	question := b.GetString(":ask")
 	req, _ := json.Marshal(&models.RobotReq{
 		Key:    getKey(),
@@ -64,8 +64,8 @@ func (b *BotController) Get() {
 }
 
 // Response return
-func (b *BotController) Response(code int, msg string) {
-	resp := &BotResp{
+func (b *Controller) Response(code int, msg string) {
+	resp := &Resp{
 		Code: code,
 		Msg:  msg,
 	}

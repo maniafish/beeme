@@ -9,6 +9,7 @@ package routers
 
 import (
 	"beeme/controllers"
+	"beeme/controllers/robot"
 
 	"github.com/astaxie/beego"
 )
@@ -22,7 +23,7 @@ func init() {
 		),
 		beego.NSNamespace("/robot",
 			beego.NSInclude(
-				&controllers.BotController{},
+				&robot.Controller{},
 			),
 		),
 	)

@@ -1,7 +1,6 @@
 package test
 
 import (
-	"beeme/conf"
 	"beeme/models"
 	_ "beeme/routers"
 	"bytes"
@@ -18,7 +17,6 @@ import (
 
 func init() {
 	beego.BConfig.CopyRequestBody = true
-	conf.Config.UserDB = "root:@/orm_test?charset=utf8"
 	models.Init()
 }
 

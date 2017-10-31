@@ -1,11 +1,5 @@
 language: go
 
-notifications:
-    true
-
-sudo:
-    false
-
 go:
     - 1.8.1
 

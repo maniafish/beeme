@@ -69,6 +69,7 @@ func (u *Controller) Get() {
 // @Param	body		body 	models.User	true		"body for user content"
 // @Success 200 {object} models.User
 // @Failure 400 invalid uid/body
+// @Failure 404 user not exist
 // @Failure 500 internal error
 // @router /:uid [put]
 func (u *Controller) Put() {

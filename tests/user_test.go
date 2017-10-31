@@ -1,7 +1,10 @@
 package test
 
 import (
+	"beeme/conf"
+	"beeme/models"
 	_ "beeme/routers"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,37 +16,114 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+func init() {
+	beego.BConfig.CopyRequestBody = true
+	conf.Config.UserDB = "root:@/orm_test?charset=utf8"
+	models.Init()
+}
+
+func testGetUser(t *testing.T, id int, expCode int, expect interface{}) {
+	r, _ := http.NewRequest("GET", fmt.Sprintf("/v1/user/%d", id), nil)
+	w := httptest.NewRecorder()
+	beego.BeeApp.Handlers.ServeHTTP(w, r)
+	Convey("Subject: Test User Get\n", t, func() {
+		Convey("Status Code Should Be 200\n", func() {
+			So(w.Code, ShouldEqual, expCode)
+		})
+
+		if expCode == 200 {
+			Convey("Should Have Valid Body\n", func() {
+				user := &models.User{}
+				ret, err := ioutil.ReadAll(w.Body)
+				So(err, ShouldBeNil)
+				err = json.Unmarshal(ret, user)
+				So(err, ShouldBeNil)
+				So(user, ShouldResemble, expect)
+			})
+		}
+	})
+}
+
 // TestUser is a sample to run an user api test
 func TestUser(t *testing.T) {
 	type UID struct {
 		Data int `json:"uid"`
 	}
-	r, _ := http.NewRequest("GET", fmt.Sprintf("/v1/user/get/test"), nil)
+
+	uid := &UID{}
+	user := &models.User{
+		Username: "test",
+		Password: "pass",
+		Gender:   "male",
+		Age:      1,
+		Address:  "netease",
+		Email:    "mania",
+	}
+
+	// Test Post
+	body, _ := json.Marshal(user)
+	r, _ := http.NewRequest("POST", "/v1/user/", bytes.NewReader(body))
 	w := httptest.NewRecorder()
 	beego.BeeApp.Handlers.ServeHTTP(w, r)
-
-	Convey("Subject: Test User Invalid\n", t, func() {
-		Convey("Status Code Should Be 403\n", func() {
-			So(w.Code, ShouldEqual, 403)
-		})
-	})
-
-	r, _ = http.NewRequest("GET", "/v1/user/get/123", nil)
-	w = httptest.NewRecorder()
-	beego.BeeApp.Handlers.ServeHTTP(w, r)
-
-	Convey("Subject: Test GetUser\n", t, func() {
+	Convey("Subject: Test User Post\n", t, func() {
 		Convey("Status Code Should Be 200\n", func() {
 			So(w.Code, ShouldEqual, 200)
 		})
 
-		Convey("The Result Should Be 123\n", func() {
+		Convey("Should Have Valid Body\n", func() {
 			ret, err := ioutil.ReadAll(w.Body)
 			So(err, ShouldBeNil)
-			uid := &UID{}
 			err = json.Unmarshal(ret, uid)
 			So(err, ShouldBeNil)
-			So(uid.Data, ShouldEqual, 123)
+			So(uid.Data, ShouldBeGreaterThan, 0)
 		})
 	})
+
+	// TestGet
+	user.ID = uid.Data
+	testGetUser(t, user.ID, 200, user)
+
+	// TestPut
+	user.Username += "+1"
+	body, _ = json.Marshal(user)
+	r, _ = http.NewRequest("PUT", fmt.Sprintf("/v1/user/%d", user.ID), bytes.NewReader(body))
+	w = httptest.NewRecorder()
+	beego.BeeApp.Handlers.ServeHTTP(w, r)
+	Convey("Subject: Test User Update\n", t, func() {
+		Convey("Status Code Should Be 200\n", func() {
+			So(w.Code, ShouldEqual, 200)
+		})
+
+		Convey("Should Have Valid Body\n", func() {
+			userGet := &models.User{}
+			ret, err := ioutil.ReadAll(w.Body)
+			So(err, ShouldBeNil)
+			err = json.Unmarshal(ret, userGet)
+			So(err, ShouldBeNil)
+			So(userGet, ShouldResemble, user)
+		})
+
+	})
+
+	testGetUser(t, user.ID, 200, user)
+
+	// TestDelete
+	r, _ = http.NewRequest("DELETE", fmt.Sprintf("/v1/user/%d", user.ID), nil)
+	w = httptest.NewRecorder()
+	beego.BeeApp.Handlers.ServeHTTP(w, r)
+	Convey("Subject: Test User Update\n", t, func() {
+		Convey("Status Code Should Be 200\n", func() {
+			So(w.Code, ShouldEqual, 200)
+		})
+
+		Convey("Should Have Valid Body\n", func() {
+			ret, err := ioutil.ReadAll(w.Body)
+			So(err, ShouldBeNil)
+			err = json.Unmarshal(ret, uid)
+			So(err, ShouldBeNil)
+			So(uid.Data, ShouldEqual, user.ID)
+		})
+	})
+
+	testGetUser(t, user.ID, 404, nil)
 }

@@ -9,10 +9,21 @@ go_import_path:
 services:
     - mysql
 
+env:
+    - ORM_DRIVER=mysql    ORM_SOURCE="root:@/orm_test?charset=utf8"
+
 install:
     - go get -v $(go list ./...|grep -v vendor/)
     - go get -u github.com/golang/lint/golint
 
+before_script:
+    - go build -v
+    - sh -c "mysql -u root -e 'create database orm_test;'"
+
 script:
     - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done
     - go vet $(go list ./...|grep -v vendor/)
+    - go test $(go list ./...|grep -v vendor/)
+
+after_script:
+    - sh -c "mysql -u root -e 'drop database orm_test;'"

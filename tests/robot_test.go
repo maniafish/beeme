@@ -1,7 +1,7 @@
 package test
 
 import (
-	"beeme/controllers"
+	"beeme/controllers/robot"
 	_ "beeme/routers"
 	"encoding/json"
 	"fmt"
@@ -26,7 +26,7 @@ func TestRobot(t *testing.T) {
 			So(w.Code, ShouldEqual, 200)
 			ret, err := ioutil.ReadAll(w.Body)
 			So(err, ShouldBeNil)
-			resp := &controllers.BotResp{}
+			resp := &robot.Resp{}
 			err = json.Unmarshal(ret, resp)
 			So(err, ShouldBeNil)
 			So(resp.Code, ShouldEqual, 200)

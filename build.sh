@@ -14,4 +14,5 @@ if [ -z "PID" ];then
     exit 1
 fi
 
+# kill proc
 kill ${PID}

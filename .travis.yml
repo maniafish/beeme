@@ -22,7 +22,7 @@ before_script:
 script:
     - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done
     - go vet $(go list ./...|grep -v vendor/)
-    - go build -v
+    - sh build.sh
     - go test $(go list ./...|grep -v vendor/)
 
 after_script:

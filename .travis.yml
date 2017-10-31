@@ -24,6 +24,3 @@ script:
     - go vet $(go list ./...|grep -v vendor/)
     - sh build.sh
     - go test -v $(go list ./...|grep -v vendor/)
-
-after_script:
-    - sh -c "mysql -u root -e 'drop database orm_test;'"

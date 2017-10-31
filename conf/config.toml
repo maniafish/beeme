@@ -16,4 +16,4 @@ TulingKeys = [
 # 数据库配置
 DBMaxOpenConns = 128
 DBMaxIdleConns = 32
-UserDB = "root:@tcp(127.0.0.1:3306)/USER?charset=latin1&autocommit=1&parseTime=true&loc=Local&timeout=3s"
+UserDB = "root:@/orm_test?charset=utf8"

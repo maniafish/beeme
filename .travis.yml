@@ -20,7 +20,7 @@ before_script:
     - sh -c "mysql -u root -e 'create database orm_test;'"
 
 script:
-    - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done
+    - golint -set_exit_status $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./...|grep -v vendor/)
     - sh build.sh
     - go test -v $(go list ./...|grep -v vendor/)

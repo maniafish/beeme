@@ -23,7 +23,7 @@ script:
     - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done
     - go vet $(go list ./...|grep -v vendor/)
     - sh build.sh
-    - go test $(go list ./...|grep -v vendor/)
+    - go test -v $(go list ./...|grep -v vendor/)
 
 after_script:
     - sh -c "mysql -u root -e 'drop database orm_test;'"

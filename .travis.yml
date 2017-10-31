@@ -17,12 +17,12 @@ install:
     - go get -u github.com/golang/lint/golint
 
 before_script:
-    - go build -v
     - sh -c "mysql -u root -e 'create database orm_test;'"
 
 script:
     - for pkg in $(go list ./... | grep -v /vendor/) ; do golint -set_exit_status $pkg ; done
     - go vet $(go list ./...|grep -v vendor/)
+    - go build -v
     - go test $(go list ./...|grep -v vendor/)
 
 after_script:

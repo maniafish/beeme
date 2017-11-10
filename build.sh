@@ -1,6 +1,6 @@
 #!/bin/sh
 
-function go_lint(){
+if [ "$1" == "lint" ]; then
     for pkg in $(go list ./... | grep -v /vendor/)
     do
         golint -set_exit_status $pkg
@@ -8,10 +8,7 @@ function go_lint(){
             exit 1
         fi
     done
-}
 
-if [ "$1" == "lint" ]; then
-    go_lint
     exit 0
 fi
 

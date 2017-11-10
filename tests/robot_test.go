@@ -1,11 +1,8 @@
 package test
 
 import (
-	"beeme/controllers/robot"
 	_ "beeme/routers"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -24,12 +21,6 @@ func TestRobot(t *testing.T) {
 	Convey("Subject: Test Tuling\n", t, func() {
 		Convey("Status Code Should Be 200\n", func() {
 			So(w.Code, ShouldEqual, 200)
-			ret, err := ioutil.ReadAll(w.Body)
-			So(err, ShouldBeNil)
-			resp := &robot.Resp{}
-			err = json.Unmarshal(ret, resp)
-			So(err, ShouldBeNil)
-			So(resp.Code, ShouldEqual, 200)
 		})
 	})
 }

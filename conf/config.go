@@ -24,9 +24,15 @@ var Config *MainConfig
 
 func init() {
 	Config = &MainConfig{}
-	_, thisFilePath, _, _ := runtime.Caller(0)
-	file := filepath.Join(filepath.Dir(thisFilePath), "config.toml")
-	logs.Info("config file: %v", file)
+	file := filepath.Join("conf", "config.toml")
+	path, _ := filepath.Abs(file)
+	// 路径无效
+	if len(filepath.SplitList(path)) <= 2 {
+		_, thisFilePath, _, _ := runtime.Caller(0)
+		file = filepath.Join(filepath.Dir(thisFilePath), "config.toml")
+	}
+
+	logs.Info("config path: %v", path)
 	if _, err := toml.DecodeFile(file, Config); err != nil {
 		logs.Error("Parse config.toml Failed: %v", err)
 		os.Exit(1)

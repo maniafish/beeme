@@ -1,16 +1,13 @@
 #!/bin/sh
 
-if [ "$1" == "lint" ]; then
-    for pkg in $(go list ./... | grep -v /vendor/)
-    do
-        golint -set_exit_status $pkg
-        if [ $? -ne 0 ]; then
-            exit 1
-        fi
-    done
-
-    exit 0
-fi
+# golint
+for pkg in $(go list ./... | grep -v /vendor/)
+do
+    golint -set_exit_status $pkg
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+done
 
 go build -v
 if [ $? -ne 0 ];then

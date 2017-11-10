@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	"github.com/BurntSushi/toml"
 	"github.com/astaxie/beego/logs"
@@ -25,12 +26,13 @@ var Config *MainConfig
 func init() {
 	Config = &MainConfig{}
 	var file string
-	// 无配置
-	if len(os.Args) < 2 {
+	logs.Info("args: %v", os.Args)
+	// 指定配置
+	if len(os.Args) == 2 && strings.Contains(os.Args[1], ".toml") {
+		file = os.Args[1]
+	} else {
 		_, thisFilePath, _, _ := runtime.Caller(0)
 		file = filepath.Join(filepath.Dir(thisFilePath), "config.toml")
-	} else {
-		file = os.Args[1]
 	}
 
 	if _, err := toml.DecodeFile(file, Config); err != nil {

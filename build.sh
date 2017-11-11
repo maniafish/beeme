@@ -24,4 +24,4 @@ if [ -z "PID" ];then
 fi
 
 # kill proc
-kill ${PID}
+kill -9 ${PID}

@@ -1,9 +1,9 @@
 package models
 
 import (
-	"beeme/conf"
 	"errors"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 
 	// mysql driver
@@ -29,7 +29,17 @@ type User struct {
 
 // Init Register database
 func Init() {
-	err := orm.RegisterDataBase("default", "mysql", conf.Config.UserDB, conf.Config.DBMaxIdleConns, conf.Config.DBMaxOpenConns)
+	maxIdleConns, _ := beego.AppConfig.Int("apps::MaxIdleConns")
+	if maxIdleConns <= 0 {
+		maxIdleConns = 16
+	}
+
+	maxOpenConns, _ := beego.AppConfig.Int("DBMaxOpenConns")
+	if maxOpenConns <= 0 {
+		maxOpenConns = 16
+	}
+
+	err := orm.RegisterDataBase("default", "mysql", beego.AppConfig.String("apps::UserDB"), maxIdleConns, maxOpenConns)
 	if err != nil {
 		panic(err)
 	}

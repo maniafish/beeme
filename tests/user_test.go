@@ -2,7 +2,6 @@ package test
 
 import (
 	"beeme/models"
-	_ "beeme/routers"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -14,11 +13,6 @@ import (
 	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"
 )
-
-func init() {
-	beego.BConfig.CopyRequestBody = true
-	models.Init()
-}
 
 func testGetUser(t *testing.T, id int, expCode int, expect interface{}) {
 	r, _ := http.NewRequest("GET", fmt.Sprintf("/v1/user/%d", id), nil)

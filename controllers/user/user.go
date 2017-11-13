@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 // Controller Operations about Users
@@ -21,15 +22,20 @@ type Controller struct {
 // @Failure 500 internal error
 // @router / [post]
 func (u *Controller) Post() {
+	logPrefix := "user.Post()"
 	var user *models.User
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &user)
 	if err != nil {
+		logs.Error("%s.RequestBody err: %v", logPrefix, err)
 		u.Response(400, err.Error())
+		return
 	}
 
 	uid, err := user.Add()
 	if err != nil {
+		logs.Error("%s.Add err: %v", logPrefix, err)
 		u.Response(500, err.Error())
+		return
 	}
 
 	u.Response(200, map[string]int{"uid": uid})
@@ -45,9 +51,12 @@ func (u *Controller) Post() {
 // @Failure 500 internal error
 // @router /:uid [get]
 func (u *Controller) Get() {
+	logPrefix := "user.Get()"
 	uid, err := u.GetInt(":uid")
 	if err != nil {
+		logs.Info("%s.GetInt err: %v", logPrefix, err)
 		u.Response(400, err.Error())
+		return
 	}
 
 	user := &models.User{ID: uid}
@@ -55,10 +64,14 @@ func (u *Controller) Get() {
 	switch err {
 	case models.ErrUNE:
 		u.Response(404, err.Error())
+		return
 	case nil:
 		u.Response(200, user)
+		return
 	default:
+		logs.Error("%s.Get err: %v", logPrefix, err)
 		u.Response(500, err.Error())
+		return
 	}
 }
 
@@ -73,9 +86,12 @@ func (u *Controller) Get() {
 // @Failure 500 internal error
 // @router /:uid [put]
 func (u *Controller) Put() {
+	logPrefix := "user.Put()"
 	uid, err := u.GetInt(":uid")
 	if err != nil {
+		logs.Info("%s.GetInt err: %v", logPrefix, err)
 		u.Response(400, err.Error())
+		return
 	}
 
 	user := &models.User{ID: uid}
@@ -83,18 +99,30 @@ func (u *Controller) Put() {
 	switch err {
 	case models.ErrUNE:
 		u.Response(404, err.Error())
+		return
 	case nil:
-		json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+		err = json.Unmarshal(u.Ctx.Input.RequestBody, &user)
+		if err != nil {
+			logs.Info("%s.RequestBody err: %v", logPrefix, err)
+			u.Response(400, err.Error())
+			return
+		}
+
 		user.ID = uid
 		err = user.Update()
 		switch err {
 		case nil:
 			u.Response(200, user)
+			return
 		default:
+			logs.Error("%s.Update err: %v", logPrefix, err)
 			u.Response(500, err.Error())
+			return
 		}
 	default:
+		logs.Error("%s.Get err: %v", logPrefix, err)
 		u.Response(500, err.Error())
+		return
 	}
 }
 
@@ -108,16 +136,21 @@ func (u *Controller) Put() {
 // @Failure 500 internal error
 // @router /:uid [delete]
 func (u *Controller) Delete() {
+	logPrefix := "user.Delete()"
 	uid, err := u.GetInt(":uid")
 	user := &models.User{ID: uid}
 	err = user.Delete()
 	switch err {
 	case models.ErrUNE:
 		u.Response(404, err.Error())
+		return
 	case nil:
 		u.Response(200, map[string]int{"uid": uid})
+		return
 	default:
+		logs.Error("%s.Delete err: %v", logPrefix, err)
 		u.Response(500, err.Error())
+		return
 	}
 }
 

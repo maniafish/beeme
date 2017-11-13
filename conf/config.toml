@@ -1,8 +1,0 @@
-# 图灵机器人相关配置
-TulingURL = "http://www.tuling123.com/openapi/api"
-TulingKeys = ["tulingtest"]
-
-# 数据库配置
-DBMaxOpenConns = 128
-DBMaxIdleConns = 32
-UserDB = "root:@/orm_test?charset=utf8"

@@ -13,6 +13,9 @@ all:
 linux:
 	GOOS=linux go build -i -v -ldflags "-X 'main.version=version: ${VERSION}, git_version: ${GIT_CNT}(${REV}) date: ${DATE}'" -o beeme-${BRANCH}-v${VERSION}
 
+debug:
+	go build -i -v -race -gcflags "-N -l" -o beeme-debug
+
 check_branch_master:
 
 ifneq (${BRANCH}, master)

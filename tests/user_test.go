@@ -2,7 +2,6 @@ package test
 
 import (
 	"beeme/models"
-	_ "beeme/routers"
 	"bytes"
 	"encoding/json"
 	"fmt"

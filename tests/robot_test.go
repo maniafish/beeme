@@ -1,7 +1,6 @@
 package test
 
 import (
-	_ "beeme/routers"
 	"net/http"
 	"net/http/httptest"
 	"testing"

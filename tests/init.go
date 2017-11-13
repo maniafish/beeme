@@ -2,6 +2,7 @@ package test
 
 import (
 	"beeme/models"
+	_ "beeme/routers"
 	"path"
 	"path/filepath"
 	"runtime"

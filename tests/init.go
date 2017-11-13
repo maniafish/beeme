@@ -2,6 +2,7 @@ package test
 
 import (
 	"beeme/models"
+	// for init routers
 	_ "beeme/routers"
 	"path"
 	"path/filepath"
@@ -12,8 +13,14 @@ import (
 
 func init() {
 	_, thisFilePath, _, _ := runtime.Caller(0)
-	beego.LoadAppConfig(
+	err := beego.LoadAppConfig(
 		"ini",
-		path.Join(filepath.Dir(filepath.Dir(thisFilePath)), "conf", "app.conf"))
+		path.Join(filepath.Dir(filepath.Dir(thisFilePath)), "conf", "app.conf"),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
 	models.Init()
 }

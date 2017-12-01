@@ -25,8 +25,13 @@ ifneq (${BRANCH}, master)
 endif
 
 release: check_branch_master linux
+	git push ${REMOTE} ${BRANCH}
 	git tag -a v${MAIN_VER} -m "rc v${VERSION}"
 	git push ${REMOTE} v${MAIN_VER}
 	scp beeme-${BRANCH}-v${VERSION} ${DEPLOY}
 
-.PHONY: all linux check_branch_master release
+run:
+	rm -f routers/commentsRouter*
+	bee run -gendoc=true
+
+.PHONY: all linux check_branch_master release run

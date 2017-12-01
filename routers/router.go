@@ -8,6 +8,7 @@ package routers
 // @LicenseUrl http://www.apache.org/licenses/LICENSE-2.0.html
 
 import (
+	"beeme/controllers/hello"
 	"beeme/controllers/robot"
 	"beeme/controllers/user"
 
@@ -16,6 +17,9 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/v1",
+		beego.NSInclude(
+			&hello.Controller{},
+		),
 		beego.NSNamespace("/robot",
 			beego.NSInclude(
 				&robot.Controller{},

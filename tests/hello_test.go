@@ -19,7 +19,7 @@ func TestToken(t *testing.T) {
 	v.Set("nonce", "no")
 	v.Set("echostr", "success")
 	v.Set("token", beego.AppConfig.String("apps::AppID"))
-	url := "/v1" + "?" + v.Encode()
+	url := "/v1/js" + "?" + v.Encode()
 	r, _ := http.NewRequest("GET", url, nil)
 	w := httptest.NewRecorder()
 	beego.BeeApp.Handlers.ServeHTTP(w, r)

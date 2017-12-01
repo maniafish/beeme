@@ -17,8 +17,10 @@ import (
 
 func init() {
 	ns := beego.NewNamespace("/v1",
-		beego.NSInclude(
-			&hello.Controller{},
+		beego.NSNamespace("/js",
+			beego.NSInclude(
+				&hello.Controller{},
+			),
 		),
 		beego.NSNamespace("/robot",
 			beego.NSInclude(

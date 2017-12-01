@@ -19,7 +19,6 @@ type TokenRequest struct {
 	Timestamp string `sort:"timestamp"`
 	Nonce     string `sort:"nonce"`
 	Echostr   string `sort:"-"`
-	Token     string `sort:"token"`
 }
 
 func sha1Sign(v interface{}) string {
@@ -39,15 +38,9 @@ func (c *Controller) Get() {
 		Timestamp: c.GetString("timestamp"),
 		Nonce:     c.GetString("nonce"),
 		Echostr:   c.GetString("echostr"),
-		Token:     c.GetString("token"),
 	}
 
 	logs.Info("%s.TokenRequest: %+v", logPrefix, req)
-	if req.Token != beego.AppConfig.String("apps::AppID") {
-		c.Ctx.WriteString("invalid token")
-		return
-	}
-
 	expect := sha1Sign(req)
 	if expect != req.Sign {
 		logs.Info("%s.verifySign: expect sign: %s", logPrefix, expect)

@@ -6,7 +6,7 @@ COMMIT_MSG=$(shell git log --pretty=format:"%B" -2)
 REMOTE=$(shell git remote -v | grep "beeme" | awk '{print $$1;exit}')
 REV=$(shell git rev-parse --short HEAD)
 DATE=$(shell date "+%Y-%m-%d %H:%M:%S")
-DEPLOY=$(shell awk '$1=="Deploy"{print $$2;exit}' conf/config.toml)
+DEPLOY=$(shell awk '$$1=="Deploy"{print $$2;exit}' conf/config.toml)
 
 all:
 	go build -i -v -ldflags "-X 'main.version=version: ${VERSION}, git_version: ${GIT_CNT}(${REV}) date: ${DATE}'" -o beeme-${BRANCH}-v${VERSION}

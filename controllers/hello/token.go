@@ -19,6 +19,7 @@ type TokenRequest struct {
 	Timestamp string `sort:"timestamp"`
 	Nonce     string `sort:"nonce"`
 	Echostr   string `sort:"-"`
+	Token     string `sort:"token"`
 }
 
 func sha1Sign(v interface{}) string {
@@ -38,6 +39,7 @@ func (c *Controller) Get() {
 		Timestamp: c.GetString("timestamp"),
 		Nonce:     c.GetString("nonce"),
 		Echostr:   c.GetString("echostr"),
+		Token:     beego.AppConfig.String("apps::AppID"),
 	}
 
 	logs.Info("%s.TokenRequest: %+v", logPrefix, req)

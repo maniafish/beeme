@@ -268,7 +268,7 @@ func TestEncodeWithFlag(t *testing.T) {
 
 }
 
-func TestEncodeValues(t *testing.T) {
+func TestGetValuesByTag(t *testing.T) {
 	Convey("Subject: Test EncodeValues\n", t, func() {
 		foo2 := Foo{
 			A: 20,

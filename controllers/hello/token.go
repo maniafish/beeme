@@ -13,6 +13,7 @@ type Controller struct {
 	beego.Controller
 }
 
+// TokenRequest request for token
 type TokenRequest struct {
 	Sign      string `sort:"-"`
 	Timestamp string `sort:"timestamp"`

@@ -14,7 +14,7 @@ import (
 // TestToken is a sample to run token test
 func TestToken(t *testing.T) {
 	v := url.Values{}
-	v.Set("signature", "c3d3ca6f7e92bf2928f5419d5458826c10ee5ed3")
+	v.Set("signature", "4223754551c082176b29c847ef79bb297378f2f7")
 	v.Set("timestamp", "1512121658")
 	v.Set("nonce", "no")
 	v.Set("echostr", "success")

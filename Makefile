@@ -36,4 +36,7 @@ run:
 	rm -f routers/commentsRouter*
 	bee run -gendoc=true
 
-.PHONY: all linux check_branch_master upload release run
+build:
+	sh build.sh
+
+.PHONY: all linux check_branch_master upload release run build

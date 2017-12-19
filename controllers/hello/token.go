@@ -30,7 +30,7 @@ func sha1Sign(v interface{}) string {
 
 // Get get
 // @Title Get
-// @Description verify js token
+// @Description verify js token, doc site: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421135319
 // @router / [get]
 func (c *Controller) Get() {
 	logPrefix := "hello.Get()"

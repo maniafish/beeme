@@ -65,8 +65,8 @@ func (c *Controller) Post() {
 	}
 
 	resp := &MessageResp{
-		ToUserName:   r.ToUserName,
-		FromUserName: r.FromUserName,
+		ToUserName:   r.FromUserName,
+		FromUserName: r.ToUserName,
 		MsgType:      r.MsgType,
 		CreateTime:   time.Now().Unix(),
 	}

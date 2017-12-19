@@ -99,5 +99,5 @@ func (c *Controller) ServerLog() {
 		c.Logger.Errorf("invalid retType: %v", c.retType)
 	}
 
-	c.Logger.Infof("header: %v\t, method: %v\t, url: %v\t, body: %s\t, resp: %v", c.Ctx.Request.Method, c.Ctx.Request.Method, c.Ctx.Request.RequestURI, c.Ctx.Input.RequestBody, resp)
+	c.Logger.Infof("header: %v, method: %v, url: %v, body: %s, resp: %v", c.Ctx.Request.Method, c.Ctx.Request.Method, c.Ctx.Request.RequestURI, c.Ctx.Input.RequestBody, resp)
 }

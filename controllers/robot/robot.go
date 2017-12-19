@@ -2,7 +2,6 @@ package robot
 
 import (
 	"beeme/models"
-	"beeme/util/counter"
 	"encoding/json"
 	"fmt"
 
@@ -22,13 +21,6 @@ type Resp struct {
 	Msg  string `json:"msg"`
 }
 
-var robotid = counter.New()
-
-func getKey() string {
-	keyID := robotid.Incr() % uint64(len(beego.AppConfig.Strings("apps::TulingKeys")))
-	return beego.AppConfig.Strings("apps::TulingKeys")[keyID]
-}
-
 // Get get
 // @Title Get
 // @Description get question
@@ -39,7 +31,7 @@ func (b *Controller) Get() {
 	logPrefix := "robot.Get()"
 	question := b.GetString(":ask")
 	req, _ := json.Marshal(&models.RobotReq{
-		Key:    getKey(),
+		Key:    models.GetRobotKey(),
 		Info:   question,
 		UserID: "",
 	})

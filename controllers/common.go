@@ -15,10 +15,9 @@ var reqid = counter.New()
 // Controller base controller implement log wrap, request and response
 type Controller struct {
 	beego.Controller
-	Logger   mylog.MyLogger
-	retType  string
-	request  interface{}
-	response interface{}
+	Logger  mylog.MyLogger
+	retType string
+	request interface{}
 }
 
 // Initialize init Controller.Logger(set requestid)
@@ -38,20 +37,19 @@ func (c *Controller) GetRequest() interface{} {
 	return c.request
 }
 
-// SetResponse set response
-func (c *Controller) SetResponse(v interface{}) {
-	c.response = v
+// SetRetType set response type
+func (c *Controller) SetRetType(v string) {
+	c.retType = v
 }
 
-// GetResponse set response
-func (c *Controller) GetResponse() interface{} {
-	return c.response
+// GetRetType get response type
+func (c *Controller) GetRetType() string {
+	return c.retType
 }
 
 // ServeJSON return json-data
 func (c *Controller) ServeJSON(v interface{}) {
-	c.retType = "json"
-	c.SetResponse(v)
+	c.SetRetType("json")
 	c.Data[c.retType] = v
 	c.Controller.ServeJSON()
 	c.ServerLog()
@@ -59,8 +57,7 @@ func (c *Controller) ServeJSON(v interface{}) {
 
 // ServeXML return xml-data
 func (c *Controller) ServeXML(v interface{}) {
-	c.retType = "xml"
-	c.SetResponse(v)
+	c.SetRetType("xml")
 	c.Data[c.retType] = v
 	c.Controller.ServeXML()
 	c.ServerLog()
@@ -68,8 +65,7 @@ func (c *Controller) ServeXML(v interface{}) {
 
 // ServeString return string-data
 func (c *Controller) ServeString(v string) {
-	c.retType = "string"
-	c.SetResponse(v)
+	c.SetRetType("string")
 	c.Data[c.retType] = v
 	c.Controller.Ctx.WriteString(v)
 	c.ServerLog()
@@ -78,7 +74,7 @@ func (c *Controller) ServeString(v string) {
 // ServerLog logf request and response
 func (c *Controller) ServerLog() {
 	var resp string
-	switch c.retType {
+	switch c.GetRetType() {
 	case "xml":
 		b, e := xml.Marshal(c.Data["xml"])
 		if e != nil {

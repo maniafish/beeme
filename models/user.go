@@ -16,17 +16,6 @@ var (
 	ErrUNE = errors.New("User not Exist")
 )
 
-// User user model
-type User struct {
-	ID       int    `json:"id" orm:"pk;column(id);auto"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Gender   string `json:"gender"`
-	Age      int    `json:"age"`
-	Address  string `json:"address"`
-	Email    string `json:"email"`
-}
-
 // Init Register database
 func Init() {
 	maxIdleConns, _ := beego.AppConfig.Int("apps::MaxIdleConns")
@@ -39,17 +28,29 @@ func Init() {
 		maxOpenConns = 16
 	}
 
+	orm.RegisterModel(new(RobotMsg), new(User))
 	err := orm.RegisterDataBase("default", "mysql", beego.AppConfig.String("apps::UserDB"), maxIdleConns, maxOpenConns)
 	if err != nil {
 		panic(err)
 	}
 
-	orm.RegisterModel(new(User))
 	err = orm.RunSyncdb("default", false, true)
 	if err != nil {
 		panic(err)
 	}
+
 	userOrmer = orm.NewOrm()
+}
+
+// User user model
+type User struct {
+	ID       int    `json:"id" orm:"pk;column(id);auto"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Gender   string `json:"gender"`
+	Age      int    `json:"age"`
+	Address  string `json:"address"`
+	Email    string `json:"email"`
 }
 
 // Add add new user

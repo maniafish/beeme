@@ -59,7 +59,7 @@ func (r *RobotMsg) Get() error {
 }
 
 // TableIndex set index
-func (u *RobotMsg) TableIndex() [][]string {
+func (r *RobotMsg) TableIndex() [][]string {
 	return [][]string{
 		[]string{"MsgType", "Resp"},
 	}

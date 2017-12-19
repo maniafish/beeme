@@ -1,6 +1,7 @@
 package hello
 
 import (
+	"beeme/controllers"
 	"beeme/util/sha1str"
 	"beeme/util/sort"
 
@@ -10,7 +11,7 @@ import (
 
 // Controller Operations about hello
 type Controller struct {
-	beego.Controller
+	controllers.Controller
 }
 
 // TokenRequest request for token
@@ -30,7 +31,7 @@ func sha1Sign(v interface{}) string {
 
 // Get get
 // @Title Get
-// @Description verify js token
+// @Description verify js token, doc site: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421135319
 // @router / [get]
 func (c *Controller) Get() {
 	logPrefix := "hello.Get()"

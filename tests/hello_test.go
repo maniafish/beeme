@@ -2,6 +2,7 @@ package test
 
 import (
 	"beeme/controllers/hello"
+	"beeme/models"
 	"beeme/util/xmls"
 	"bytes"
 	"encoding/xml"
@@ -67,7 +68,7 @@ func TestMessage(t *testing.T) {
 			resp := &hello.MessageResp{}
 			err = xml.Unmarshal(ret, resp)
 			So(err, ShouldBeNil)
-			So(string(resp.Content), ShouldEqual, "小O来咯~")
+			So(string(resp.Content), ShouldEqual, models.DefaultErrMsg)
 		})
 	})
 }

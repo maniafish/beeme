@@ -1,6 +1,7 @@
 package hello
 
 import (
+	"beeme/controllers"
 	"beeme/util/sha1str"
 	"beeme/util/sort"
 
@@ -10,7 +11,7 @@ import (
 
 // Controller Operations about hello
 type Controller struct {
-	beego.Controller
+	controllers.Controller
 }
 
 // TokenRequest request for token

@@ -86,8 +86,13 @@ func (c *Controller) Post() {
 		c.Logger.Errorf(err.Error())
 	}
 
-	if err != nil {
-		resp.MsgType = "text"
+	switch err {
+	case nil:
+	case models.ErrRML:
+		resp.MsgType = xmls.CharData("text")
+		resp.Content = xmls.CharData(models.RmlErrMsg)
+	default:
+		resp.MsgType = xmls.CharData("text")
 		resp.Content = xmls.CharData(models.DefaultErrMsg)
 	}
 
@@ -108,7 +113,7 @@ func (c *Controller) setDefaultReturn(r *MessageReq) *MessageResp {
 func (c *Controller) textResponse(resp *MessageResp) error {
 	r, ok := c.GetRequest().(*MessageReq)
 	if !ok {
-		err := errors.New("textResponse.GetRequest err")
+		err := errors.New("GetRequest err")
 		c.Logger.Errorf(err.Error())
 		return err
 	}
@@ -149,6 +154,10 @@ func (c *Controller) textResponse(resp *MessageResp) error {
 	}
 
 	if !obj.IsValid() {
+		if obj.IsLimit() {
+			return models.ErrRML
+		}
+
 		err = errors.Errorf("Invalid Resp: %+v", obj)
 		c.Logger.Errorf(err.Error())
 		return err

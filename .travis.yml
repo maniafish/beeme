@@ -17,7 +17,7 @@ install:
     - go get -u github.com/golang/lint/golint
 
 before_script:
-    - sh -c "mysql -u root -e 'create database orm_test;'"
+    - sh -c "mysql -u root -e 'create database orm_test default charset utf8 COLLATE utf8_general_ci;'"
 
 script:
     - go vet $(go list ./...|grep -v vendor/)

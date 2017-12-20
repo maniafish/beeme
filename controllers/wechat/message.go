@@ -1,4 +1,4 @@
-package hello
+package wechat
 
 import (
 	"beeme/models"

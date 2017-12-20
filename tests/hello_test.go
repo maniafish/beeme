@@ -1,7 +1,7 @@
 package test
 
 import (
-	"beeme/controllers/hello"
+	"beeme/controllers/wechat"
 	"beeme/models"
 	"beeme/util/xmls"
 	"bytes"
@@ -44,7 +44,7 @@ func TestToken(t *testing.T) {
 
 // TestMessage is a sample to run wechat_message test
 func TestMessage(t *testing.T) {
-	req := &hello.MessageReq{
+	req := &wechat.MessageReq{
 		ToUserName:   xmls.CharData("to"),
 		FromUserName: xmls.CharData("from"),
 		CreateTime:   time.Now().Unix(),
@@ -65,7 +65,7 @@ func TestMessage(t *testing.T) {
 		Convey("Should Have Valid Body\n", func() {
 			ret, err := ioutil.ReadAll(w.Body)
 			So(err, ShouldBeNil)
-			resp := &hello.MessageResp{}
+			resp := &wechat.MessageResp{}
 			err = xml.Unmarshal(ret, resp)
 			So(err, ShouldBeNil)
 			So(string(resp.Content), ShouldEqual, models.DefaultErrMsg)

@@ -25,7 +25,7 @@ func testGetUser(t *testing.T, id int, expCode int, expect interface{}) {
 
 		if expCode == 200 {
 			Convey("Should Have Valid Body\n", func() {
-				user := &models.User{}
+				user := &models.DemoUser{}
 				ret, err := ioutil.ReadAll(w.Body)
 				So(err, ShouldBeNil)
 				err = json.Unmarshal(ret, user)
@@ -43,7 +43,7 @@ func TestUser(t *testing.T) {
 	}
 
 	uid := &UID{}
-	user := &models.User{
+	user := &models.DemoUser{
 		Username: "test",
 		Password: "pass",
 		Gender:   "male",
@@ -87,7 +87,7 @@ func TestUser(t *testing.T) {
 		})
 
 		Convey("Should Have Valid Body\n", func() {
-			userGet := &models.User{}
+			userGet := &models.DemoUser{}
 			ret, err := ioutil.ReadAll(w.Body)
 			So(err, ShouldBeNil)
 			err = json.Unmarshal(ret, userGet)

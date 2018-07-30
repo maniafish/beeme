@@ -4,4 +4,3 @@ swagger/
 *.swp
 *.DS_Store
 beeme-*
-conf/config.toml

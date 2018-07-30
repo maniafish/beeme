@@ -1,10 +1,10 @@
 package mylog
 
 import (
+	"context"
 	"io"
 	"os"
 	"strings"
-	"sync"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -16,17 +16,8 @@ type MyLogger interface {
 	Warnf(format string, v ...interface{})
 	Errorf(format string, v ...interface{})
 	Fatalf(format string, v ...interface{})
-	GetEntryWithFields(m map[string]interface{}) *Entry
+	GetEntryWithFields(m map[string]interface{}) *Logger
 	GetField(key string) interface{}
-}
-
-// Logger log interface
-type Logger struct {
-	*log.Logger
-
-	welog *log.Logger // logger for warning and error
-	mu    sync.Mutex
-	preM  log.Fields
 }
 
 const (
@@ -49,6 +40,10 @@ var LogLevel = map[string]log.Level{
 	"FATAL": log.FatalLevel,
 }
 
+// EntryKey type of entryKey
+type EntryKey string
+
+var entryKey EntryKey = "logEntry"
 var stdLog = New("DEBUG", os.Stderr, Lfile)
 
 func getLogLevel(level string) log.Level {
@@ -96,112 +91,6 @@ func newLogger(level string, out io.Writer, flag int, relativePath string) *log.
 	return Log
 }
 
-// Predefine log with fixed extra record
-func (l *Logger) Predefine(m map[string]interface{}) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.preM = log.Fields(m)
-}
-
-// Debugf log with debug level
-func (l *Logger) Debugf(format string, v ...interface{}) {
-	if l.preM != nil {
-		l.Logger.WithFields(l.preM).Debugf(format, v...)
-	} else {
-		l.Logger.Debugf(format, v...)
-	}
-}
-
-// Infof log with info level
-func (l *Logger) Infof(format string, v ...interface{}) {
-	if l.preM != nil {
-		l.Logger.WithFields(l.preM).Infof(format, v...)
-	} else {
-		l.Logger.Infof(format, v...)
-	}
-}
-
-// Warnf log with warn level
-func (l *Logger) Warnf(format string, v ...interface{}) {
-	if l.preM != nil {
-		l.Logger.WithFields(l.preM).Warnf(format, v...)
-		if l.welog != nil {
-			l.welog.WithFields(l.preM).Warnf(format, v...)
-		}
-	} else {
-		l.Logger.Warnf(format, v...)
-		if l.welog != nil {
-			l.welog.Warnf(format, v...)
-		}
-	}
-}
-
-// Errorf log with error level
-func (l *Logger) Errorf(format string, v ...interface{}) {
-	if l.preM != nil {
-		l.Logger.WithFields(l.preM).Errorf(format, v...)
-		if l.welog != nil {
-			l.welog.WithFields(l.preM).Errorf(format, v...)
-		}
-	} else {
-		l.Logger.Errorf(format, v...)
-		if l.welog != nil {
-			l.welog.Errorf(format, v...)
-		}
-	}
-}
-
-// Fatalf log with fatal level
-func (l *Logger) Fatalf(format string, v ...interface{}) {
-	if l.preM != nil {
-		l.Logger.WithFields(l.preM).Fatalf(format, v...)
-		if l.welog != nil {
-			l.welog.WithFields(l.preM).Fatalf(format, v...)
-		}
-	} else {
-		l.Logger.Fatalf(format, v...)
-		if l.welog != nil {
-			l.welog.Fatalf(format, v...)
-		}
-	}
-}
-
-// GetEntryWithFields return an entry with fileds, inherit origin fields
-func (l *Logger) GetEntryWithFields(m map[string]interface{}) *Entry {
-	entry := &Entry{Entry: l.getEntry(m, false)}
-	if l.welog != nil {
-		entry.weEntry = l.getEntry(m, true)
-	}
-
-	return entry
-}
-
-func (l *Logger) getEntry(m map[string]interface{}, isWE bool) *log.Entry {
-	if m == nil {
-		m = make(map[string]interface{})
-	}
-
-	if l.preM != nil {
-		for k, v := range l.preM {
-			if _, ok := m[k]; !ok {
-				// 对preM中定义且m中没有的元素赋值
-				m[k] = v
-			}
-		}
-	}
-
-	if isWE {
-		return l.welog.WithFields(log.Fields(m))
-	}
-
-	return l.Logger.WithFields(log.Fields(m))
-}
-
-// GetField return field of key
-func (l *Logger) GetField(key string) interface{} {
-	return l.preM[key]
-}
-
 // Init initilize stdLog
 func Init(level string, out io.Writer, flag int, relativePath string, errout io.Writer) {
 	stdLog = NewWithRelativePath(level, out, flag, relativePath, errout)
@@ -214,85 +103,55 @@ func GetStdLog() *Logger {
 
 // Predefine stdLog with fixed extra record
 func Predefine(m map[string]interface{}) {
-	stdLog.mu.Lock()
-	defer stdLog.mu.Unlock()
-	stdLog.preM = log.Fields(m)
+	stdLog.Predefine(m)
 }
 
 // Debugf stdLog with debug level
 func Debugf(format string, v ...interface{}) {
-	if stdLog.preM != nil {
-		stdLog.Logger.WithFields(stdLog.preM).Debugf(format, v...)
-	} else {
-		stdLog.Logger.Debugf(format, v...)
-	}
+	stdLog.Debugf(format, v...)
 }
 
 // Infof stdLog with info level
 func Infof(format string, v ...interface{}) {
-	if stdLog.preM != nil {
-		stdLog.Logger.WithFields(stdLog.preM).Infof(format, v...)
-	} else {
-		stdLog.Logger.Infof(format, v...)
-	}
+	stdLog.Infof(format, v...)
 }
 
 // Warnf stdLog with warn level
 func Warnf(format string, v ...interface{}) {
-	if stdLog.preM != nil {
-		stdLog.Logger.WithFields(stdLog.preM).Warnf(format, v...)
-		if stdLog.welog != nil {
-			stdLog.welog.WithFields(stdLog.preM).Warnf(format, v...)
-		}
-	} else {
-		stdLog.Logger.Warnf(format, v...)
-		if stdLog.welog != nil {
-			stdLog.welog.Warnf(format, v...)
-		}
-	}
+	stdLog.Warnf(format, v...)
 }
 
 // Errorf stdLog with error level
 func Errorf(format string, v ...interface{}) {
-	if stdLog.preM != nil {
-		stdLog.Logger.WithFields(stdLog.preM).Errorf(format, v...)
-		if stdLog.welog != nil {
-			stdLog.welog.WithFields(stdLog.preM).Errorf(format, v...)
-		}
-	} else {
-		stdLog.Logger.Errorf(format, v...)
-		if stdLog.welog != nil {
-			stdLog.welog.Errorf(format, v...)
-		}
-	}
+	stdLog.Errorf(format, v...)
 }
 
 // Fatalf stdLog with fatal level
 func Fatalf(format string, v ...interface{}) {
-	if stdLog.preM != nil {
-		stdLog.Logger.WithFields(stdLog.preM).Fatalf(format, v...)
-		if stdLog.welog != nil {
-			stdLog.welog.WithFields(stdLog.preM).Fatalf(format, v...)
-		}
-	} else {
-		stdLog.Logger.Fatalf(format, v...)
-		if stdLog.welog != nil {
-			stdLog.welog.Fatalf(format, v...)
-		}
-	}
+	stdLog.Fatalf(format, v...)
 }
 
-// GetEntryWithFields return an entry with fileds, inherit origin fields from stdLog
-func GetEntryWithFields(m map[string]interface{}) *Entry {
-	entry := &Entry{Entry: stdLog.getEntry(m, false)}
-	if stdLog.welog != nil {
-		entry.weEntry = stdLog.getEntry(m, true)
+// GetEntryWithFields return an entry(*Logger) with fileds, inherit origin fields from stdLog
+func GetEntryWithFields(m map[string]interface{}) *Logger {
+	return stdLog.GetEntryWithFields(m)
+}
+
+// GetField return field of key from stdLog
+func GetField(key string) interface{} {
+	return stdLog.GetField(key)
+}
+
+// GetCtxEntry get entry(*Logger) from context; if no entry in context, return a new entry generated by log
+func GetCtxEntry(ctx context.Context, log MyLogger) *Logger {
+	entry, ok := ctx.Value(entryKey).(*Logger)
+	if !ok {
+		return log.GetEntryWithFields(nil)
 	}
 
 	return entry
 }
 
-// GetField return field of key from stdLog
-func GetField(key string) interface{} {
-	return stdLog.preM[key]
+// SetCtxEntry set entry(*Logger) into context
+func SetCtxEntry(ctx context.Context, e *Logger) context.Context {
+	return context.WithValue(ctx, entryKey, e)
 }

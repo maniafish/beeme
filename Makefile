@@ -24,10 +24,7 @@ ifneq (${BRANCH}, master)
 	exit 1
 endif
 
-upload: check_branch_master linux
-	scp beeme-${BRANCH}-v${VERSION} ${DEPLOY}
-
-release: upload
+release: check_branch_master
 	git push ${REMOTE} ${BRANCH}
 	git tag -a v${MAIN_VER} -m "rc v${VERSION}"
 	git push ${REMOTE} v${MAIN_VER}

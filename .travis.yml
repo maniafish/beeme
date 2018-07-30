@@ -1,10 +1,11 @@
 language: go
 
 go:
-    - 1.8.1
+    - 1.9.6
 
-go_import_path:
-    beeme
+go_import_path: beeme
+
+bundler_args: --retry 5
 
 services:
     - mysql
@@ -13,8 +14,8 @@ env:
     - ORM_DRIVER=mysql    ORM_SOURCE="root:@/orm_test?charset=utf8"
 
 install:
-    - go get -v $(go list ./...|grep -v vendor/)
-    - go get -u github.com/golang/lint/golint
+    - travis_retry go get -v $(go list ./...|grep -v vendor/)
+    - travis_retry go get -u github.com/golang/lint/golint
 
 before_script:
     - sh -c "mysql -u root -e 'create database orm_test default charset utf8 COLLATE utf8_general_ci;'"

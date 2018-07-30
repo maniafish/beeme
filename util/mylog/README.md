@@ -3,7 +3,7 @@
 
 ## Installation
 ```bash
-glide get -v gitlab.matrix.netease.com/billing_dev/goal/pkg/mylog
+go get github.com/maniafish/beeme/util/mylog
 ```
 
 ## Usage and Examples
@@ -15,8 +15,8 @@ glide get -v gitlab.matrix.netease.com/billing_dev/goal/pkg/mylog
         "path/filepath"
         "runtime"
 
-        "gitlab.matrix.netease.com/billing_dev/goal/pkg/mylog"
-        "gitlab.matrix.netease.com/billing_dev/goal/pkg/rotate"
+        "github.com/maniafish/beeme/util/mylog"
+        "github.com/maniafish/beeme/util/rotate"
     )
 
     func main() {

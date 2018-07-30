@@ -3,8 +3,6 @@ package sort
 import (
 	"fmt"
 	"testing"
-
-	. "github.com/smartystreets/goconvey/convey"
 )
 
 type User struct {
@@ -266,18 +264,4 @@ func TestEncodeWithFlag(t *testing.T) {
 		return
 	}
 
-}
-
-func TestGetValuesByTag(t *testing.T) {
-	Convey("Subject: Test EncodeValues\n", t, func() {
-		foo2 := Foo{
-			A: 20,
-			B: 1.1,
-			C: "c",
-			D: "d",
-		}
-
-		values := GetValuesByTag(foo2, "schema")
-		So(values.Encode("&"), ShouldEqual, "1.1&20&c&d")
-	})
 }

@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	userOrmer orm.Ormer
+	ormer orm.Ormer
 	// ErrUNE  user not exist error
 	ErrUNE = errors.New("User not Exist")
 )
@@ -23,12 +23,12 @@ func Init() {
 		maxIdleConns = 16
 	}
 
-	maxOpenConns, _ := beego.AppConfig.Int("DBMaxOpenConns")
+	maxOpenConns, _ := beego.AppConfig.Int("apps::DBMaxOpenConns")
 	if maxOpenConns <= 0 {
 		maxOpenConns = 16
 	}
 
-	orm.RegisterModel(new(RobotMsg), new(User))
+	orm.RegisterModel(new(DemoUser))
 	err := orm.RegisterDataBase("default", "mysql", beego.AppConfig.String("apps::UserDB"), maxIdleConns, maxOpenConns)
 	if err != nil {
 		panic(err)
@@ -39,11 +39,11 @@ func Init() {
 		panic(err)
 	}
 
-	userOrmer = orm.NewOrm()
+	ormer = orm.NewOrm()
 }
 
-// User user model
-type User struct {
+// DemoUser DemoUser model
+type DemoUser struct {
 	ID       int    `json:"id" orm:"pk;column(id);auto"`
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -53,18 +53,18 @@ type User struct {
 	Email    string `json:"email"`
 }
 
-// Add add new user
-func (u *User) Add() (int, error) {
-	_, err := userOrmer.Insert(u)
+// Add add new DemoUser
+func (u *DemoUser) Add() (int, error) {
+	_, err := ormer.Insert(u)
 	if err != nil {
 		return -1, err
 	}
 	return u.ID, nil
 }
 
-// Get get user by id
-func (u *User) Get() error {
-	err := userOrmer.Read(u, "id")
+// Get get DemoUser by id
+func (u *DemoUser) Get() error {
+	err := ormer.Read(u, "id")
 	switch err {
 	case orm.ErrNoRows:
 		return ErrUNE
@@ -73,15 +73,15 @@ func (u *User) Get() error {
 	}
 }
 
-// Update update user
-func (u *User) Update() error {
-	_, err := userOrmer.Update(u)
+// Update update DemoUser
+func (u *DemoUser) Update() error {
+	_, err := ormer.Update(u)
 	return err
 }
 
-// Delete delete user
-func (u *User) Delete() error {
-	affect, err := userOrmer.Delete(u)
+// Delete delete DemoUser
+func (u *DemoUser) Delete() error {
+	affect, err := ormer.Delete(u)
 	switch {
 	case err != nil:
 		return err

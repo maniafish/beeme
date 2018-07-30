@@ -3,9 +3,9 @@ package main
 import (
 	"beeme/models"
 	_ "beeme/routers"
+	"beeme/util/mylog"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 )
 
 var version = "version: unknown"
@@ -16,7 +16,7 @@ func main() {
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
 
-	logs.Info(version)
+	mylog.Infof(version)
 	models.Init()
 	beego.Run()
 }

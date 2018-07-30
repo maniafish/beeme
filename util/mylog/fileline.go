@@ -24,7 +24,7 @@ func (hook FileLineHook) Fire(entry *log.Entry) error {
 	// 指针数组长度决定能存多少层堆栈
 	pc := make([]uintptr, 3, 3)
 	// 跳过最底下几层，至少7层才能跳到当前程序目录
-	skip := 7
+	skip := 8
 	// 返回堆栈调用层级
 	cnt := runtime.Callers(skip, pc)
 
@@ -32,8 +32,10 @@ func (hook FileLineHook) Fire(entry *log.Entry) error {
 	for i := 0; i < cnt; i++ {
 		fu := runtime.FuncForPC(pc[i] - 1)
 		name := fu.Name()
+		// for test Lfile
+		// if strings.Contains(name, "TestLogFlag")||(...)
 		// 当调用的不是logrus的库文件或pkg/mylog时，打印当前文件信息
-		if !strings.Contains(name, "github.com/sirupsen/logrus") && !strings.Contains(name, "util/mylog") {
+		if !strings.Contains(name, "github.com/sirupsen/logrus") && (!strings.Contains(name, "util/mylog")) {
 			file, line := fu.FileLine(pc[i] - 1)
 			if hook.IsRelative {
 				// 使用相对路径

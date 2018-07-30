@@ -25,9 +25,12 @@ ifneq (${BRANCH}, master)
 endif
 
 release: check_branch_master
-	git push ${REMOTE} ${BRANCH}
-	git tag -a v${MAIN_VER} -m "rc v${VERSION}"
-	git push ${REMOTE} v${MAIN_VER}
+	git pull ${REMOTE} ${BRANCH}
+	$(eval NEW_MAIN_VER=$(shell awk -F "v" 'NR==1{print $$2;exit}' CHANGELOG.md))
+	$(eval NEW_GIT_CNT=$(shell git rev-list --count HEAD))
+	$(eval NEW_VERSION=${NEW_MAIN_VER}.${NEW_GIT_CNT})
+	git tag -a v${NEW_MAIN_VER} -m "rc v${NEW_VERSION}"
+	git push ${REMOTE} v${NEW_MAIN_VER}
 
 run:
 	rm -f routers/commentsRouter*

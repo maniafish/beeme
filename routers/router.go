@@ -20,6 +20,11 @@ func init() {
 				&demo.UserController{},
 			),
 		),
+		beego.NSNamespace("/uploadfile",
+			beego.NSInclude(
+				&demo.FileController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

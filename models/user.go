@@ -1,46 +1,11 @@
 package models
 
 import (
-	"errors"
-
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 
 	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
 )
-
-var (
-	ormer orm.Ormer
-	// ErrUNE  user not exist error
-	ErrUNE = errors.New("User not Exist")
-)
-
-// Init Register database
-func Init() {
-	maxIdleConns, _ := beego.AppConfig.Int("apps::MaxIdleConns")
-	if maxIdleConns <= 0 {
-		maxIdleConns = 16
-	}
-
-	maxOpenConns, _ := beego.AppConfig.Int("apps::DBMaxOpenConns")
-	if maxOpenConns <= 0 {
-		maxOpenConns = 16
-	}
-
-	orm.RegisterModel(new(DemoUser))
-	err := orm.RegisterDataBase("default", "mysql", beego.AppConfig.String("apps::UserDB"), maxIdleConns, maxOpenConns)
-	if err != nil {
-		panic(err)
-	}
-
-	err = orm.RunSyncdb("default", false, true)
-	if err != nil {
-		panic(err)
-	}
-
-	ormer = orm.NewOrm()
-}
 
 // DemoUser DemoUser model
 type DemoUser struct {

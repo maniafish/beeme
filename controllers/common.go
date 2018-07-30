@@ -15,66 +15,45 @@ var reqid = counter.New()
 // Controller base controller implement log wrap, request and response
 type Controller struct {
 	beego.Controller
-	Logger  mylog.MyLogger
-	retType string
-	request interface{}
+	Logger mylog.MyLogger
+	Name   string
 }
 
-// Initialize init Controller.Logger(set requestid)
-func (c *Controller) Initialize(prefix string) {
+// Prepare init Controller.Logger(set requestid)
+func (c *Controller) Prepare() {
 	c.Logger = mylog.GetEntryWithFields(map[string]interface{}{
-		"requestid": fmt.Sprintf("%v.%v", prefix, reqid.Incr()),
+		"requestid": fmt.Sprintf("%s.%v", c.Name, reqid.Incr()),
 	})
 }
 
-// SetRequest set request
-func (c *Controller) SetRequest(v interface{}) {
-	c.request = v
-}
-
-// GetRequest get request
-func (c *Controller) GetRequest() interface{} {
-	return c.request
-}
-
-// SetRetType set response type
-func (c *Controller) SetRetType(v string) {
-	c.retType = v
-}
-
-// GetRetType get response type
-func (c *Controller) GetRetType() string {
-	return c.retType
-}
-
 // ServeJSON return json-data
-func (c *Controller) ServeJSON(v interface{}) {
-	c.SetRetType("json")
-	c.Data[c.retType] = v
+func (c *Controller) ServeJSON(code int, v interface{}) {
+	c.Ctx.Output.Status = code
+	c.Data["json"] = v
 	c.Controller.ServeJSON()
-	c.ServerLog()
+	c.ServerLog("json")
 }
 
 // ServeXML return xml-data
-func (c *Controller) ServeXML(v interface{}) {
-	c.SetRetType("xml")
-	c.Data[c.retType] = v
+func (c *Controller) ServeXML(code int, v interface{}) {
+	c.Ctx.Output.Status = code
+	c.Data["xml"] = v
 	c.Controller.ServeXML()
-	c.ServerLog()
+	c.ServerLog("xml")
 }
 
 // ServeString return string-data
-func (c *Controller) ServeString(v string) {
-	c.SetRetType("string")
-	c.Data[c.retType] = v
+func (c *Controller) ServeString(code int, v string) {
+	c.Ctx.Output.Status = code
+	c.Data["string"] = v
 	c.Controller.Ctx.WriteString(v)
-	c.ServerLog()
+	c.ServerLog("string")
 }
 
 // ServerLog logf request and response
-func (c *Controller) ServerLog() {
+func (c *Controller) ServerLog(retType string) {
 	var resp string
-	switch c.GetRetType() {
+	switch retType {
 	case "xml":
 		b, e := xml.Marshal(c.Data["xml"])
 		if e != nil {
@@ -92,7 +71,7 @@ func (c *Controller) ServerLog() {
 	case "string":
 		resp, _ = c.Data["string"].(string)
 	default:
-		c.Logger.Errorf("invalid retType: %v", c.retType)
+		c.Logger.Errorf("invalid retType: %v", retType)
 	}
 
 	c.Logger.Infof("header: %v, method: %v, url: %v, body: %s, resp: %v", c.Ctx.Request.Method, c.Ctx.Request.Method, c.Ctx.Request.RequestURI, c.Ctx.Input.RequestBody, resp)

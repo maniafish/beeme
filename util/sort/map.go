@@ -135,7 +135,7 @@ func EncodeMapString(originMap map[string]string, sep string, isURLEncode bool) 
 }
 
 // EncodeMapStringExcept format map[string]string to string, except the keys specified in "except []string"
-func EncodeMapStringExcept(originMap map[string]string, except []string, sep string, isURLEncode bool) string {
+func EncodeMapStringExcept(originMap map[string]string, except []string, sep string, isURLEncode bool, omitempty bool) string {
 	exkeys := make(map[string]struct{})
 	for _, k := range except {
 		exkeys[k] = struct{}{}
@@ -149,6 +149,9 @@ func EncodeMapStringExcept(originMap map[string]string, except []string, sep str
 	sort.Strings(keys)
 	var buffer bytes.Buffer
 	for i, k := range keys {
+		if originMap[k] == "" && omitempty {
+			continue
+		}
 		if i != 0 {
 			buffer.WriteString(sep)
 		}

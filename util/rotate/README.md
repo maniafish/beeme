@@ -1,10 +1,9 @@
-# mylog
-日志模块
+# rotate
+日志轮转模块
 
 ## Installation
-```bash
-go get github.com/maniafish/beeme/util/mylog
-```
+
+    go get github.com/maniafish/beeme/util/rotate
 
 ## Usage and Examples
 
@@ -20,10 +19,16 @@ go get github.com/maniafish/beeme/util/mylog
     )
 
     func main() {
+        filename := "test.log"
+        logFile, err := os.OpenFile(filename, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0644)
+        if err != nil {
+            panic(err)
+        }
+
         // set logger
         _, lastFilePath, _, _ := runtime.Caller(0)
         ignoredDirPrefix := filepath.Dir(filepath.Dir(lastFilePath))
-        mylog.Init("DEBUG", os.Stderr, mylog.Lfile|mylog.Lrelative|mylog.Ljson|mylog.Lwelog, ignoredDirPrefix, os.Stdout)
+        mylog.Init("DEBUG", logFile, mylog.Lfile|mylog.Lrelative|mylog.Ljson|mylog.Lwelog, ignoredDirPrefix, os.Stdout)
         Log := mylog.GetStdLog()
 
         // predefine fields
@@ -32,6 +37,8 @@ go get github.com/maniafish/beeme/util/mylog
         }
 
         Log.Predefine(m)
+
+        Log.Out = rotate.InitRotate(Log, filename, rotate.Daily, 30)
 
         // log output
         Log.Infof("test log")

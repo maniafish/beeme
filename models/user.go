@@ -44,13 +44,13 @@ func Init() {
 
 // DemoUser DemoUser model
 type DemoUser struct {
-	ID           int    `json:"id" orm:"pk;column(id);auto"`
-	DemoUsername string `json:"DemoUsername"`
-	Password     string `json:"password"`
-	Gender       string `json:"gender"`
-	Age          int    `json:"age"`
-	Address      string `json:"address"`
-	Email        string `json:"email"`
+	ID       int    `json:"id" orm:"pk;column(id);auto"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Gender   string `json:"gender"`
+	Age      int    `json:"age"`
+	Address  string `json:"address"`
+	Email    string `json:"email"`
 }
 
 // Add add new DemoUser

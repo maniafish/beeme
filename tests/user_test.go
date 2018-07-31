@@ -19,7 +19,7 @@ func testGetUser(t *testing.T, id int, expCode int, expect interface{}) {
 	w := httptest.NewRecorder()
 	beego.BeeApp.Handlers.ServeHTTP(w, r)
 	Convey("Subject: Test User Get\n", t, func() {
-		Convey("Status Code Should Be 200\n", func() {
+		Convey(fmt.Sprintf("Status Code Should Be %v\n", expCode), func() {
 			So(w.Code, ShouldEqual, expCode)
 		})
 
@@ -103,7 +103,7 @@ func TestUser(t *testing.T) {
 	r, _ = http.NewRequest("DELETE", fmt.Sprintf("/v1/user/%d", user.ID), nil)
 	w = httptest.NewRecorder()
 	beego.BeeApp.Handlers.ServeHTTP(w, r)
-	Convey("Subject: Test User Update\n", t, func() {
+	Convey("Subject: Test User Delete\n", t, func() {
 		Convey("Status Code Should Be 200\n", func() {
 			So(w.Code, ShouldEqual, 200)
 		})

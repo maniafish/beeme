@@ -42,14 +42,6 @@ func (c *Controller) ServeXML(code int, v interface{}) {
 	c.ServerLog("xml")
 }
 
-// ServeString return string-data
-func (c *Controller) ServeString(code int, v string) {
-	c.Ctx.Output.Status = code
-	c.Data["string"] = v
-	c.Controller.Ctx.WriteString(v)
-	c.ServerLog("string")
-}
-
 // ServerLog logf request and response
 func (c *Controller) ServerLog(retType string) {
 	var resp string
@@ -68,11 +60,9 @@ func (c *Controller) ServerLog(retType string) {
 		} else {
 			resp = string(b)
 		}
-	case "string":
-		resp, _ = c.Data["string"].(string)
 	default:
 		c.Logger.Errorf("invalid retType: %v", retType)
 	}
 
-	c.Logger.Infof("header: %v, method: %v, url: %v, body: %s, resp: %v", c.Ctx.Request.Method, c.Ctx.Request.Method, c.Ctx.Request.RequestURI, c.Ctx.Input.RequestBody, resp)
+	c.Logger.Infof("header: %v, method: %v, url: %v, body: %s, resp: %v", c.Ctx.Request.Header, c.Ctx.Request.Method, c.Ctx.Request.URL, c.Ctx.Input.RequestBody, resp)
 }

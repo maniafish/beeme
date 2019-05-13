@@ -4,3 +4,4 @@ swagger/
 *.swp
 *.DS_Store
 beeme-*
+data/*
